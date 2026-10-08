@@ -1064,4 +1064,139 @@ npm install next-intl
 # Next.js, এই project-এ i18n plugin enable করো
 # Analogy: Manager যে team-কে বলে "আজ থেকে আমরা নতুন system use করব"
 
-<!-- #
+
+
+cd /Users/Basanta/skywings-airways/apps/web
+pwd
+# next-intl Install Verify
+npm list next-intl
+# vi i18n.ts
+import { getRequestConfig } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+export const locales = ['in', 'jp', 'de', 'ae', 'us', 'bd'] as const;
+export type Locale = (typeof locales)[number];
+
+export const localeToLanguage: Record<Locale, string> = {
+  'in': 'en',
+  'jp': 'ja',
+  'de': 'de',
+  'ae': 'ar',
+  'us': 'en',
+  'bd': 'bn',
+};
+
+export default getRequestConfig(async ({ locale }) => {
+  if (!locales.includes(locale as Locale)) notFound();
+
+  const lang = localeToLanguage[locale as Locale];
+  return {
+    messages: (await import(`./locales/${lang}.json`)).default,
+  };
+});
+
+# middleware.ts
+
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+
+const intlMiddleware = createMiddleware({
+  locales: ['in', 'jp', 'de', 'ae', 'us', 'bd'],
+  defaultLocale: 'in',
+  localePrefix: 'always',
+});
+
+const COUNTRY_TO_LOCALE: Record<string, string> = {
+  'IN': 'in',
+  'JP': 'jp',
+  'DE': 'de',
+  'AE': 'ae',
+  'US': 'us',
+  'BD': 'bd',
+  'GB': 'us',
+  'SG': 'us',
+  'CA': 'us',
+  'AU': 'us',
+};
+
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // If path already has locale prefix, run i18n middleware
+  if (/^\/(in|jp|de|ae|us|bd)(\/|$)/.test(pathname)) {
+    return intlMiddleware(request);
+  }
+
+  // Get country from headers (fallback to 'IN' in dev)
+  const country =
+    request.headers.get('x-vercel-ip-country') ||
+    request.headers.get('cf-ipcountry') ||
+    'IN';
+
+  const locale = COUNTRY_TO_LOCALE[country] || 'in';
+
+  // Redirect to locale-prefixed URL
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname}`;
+  return NextResponse.redirect(url);
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+  ],
+};
+
+# >next.config.ts
+# vi next.config.ts te nicher contant add korun
+
+import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
+
+const nextConfig: NextConfig = {
+  allowedDevOrigins: ['192.168.0.101', 'localhost', '127.0.0.1'],
+};
+
+export default withNextIntl(nextConfig);
+
+# Step 1: নতুন [locale] Folders বানান
+bash
+cd /Users/Basanta/skywings-airways/apps/web
+
+# Target folders বানান
+mkdir -p "app/[locale]/search"
+mkdir -p "app/[locale]/booking/[id]"
+
+# Verify
+ls -la app/
+
+# Step 2: Files Move করুন
+bash
+# Home page
+mv app/page.tsx "app/[locale]/page.tsx"
+
+# Search page
+mv app/search/page.tsx "app/[locale]/search/page.tsx"
+
+# Booking page
+mv "app/booking/[id]/page.tsx" "app/[locale]/booking/[id]/page.tsx"
+
+# Verify
+find app -name "*.tsx" | sort
+
+# Step 1: পুরনো খালি Folders মুছুন
+bash
+cd /Users/Basanta/skywings-airways/apps/web
+
+# খালি folders check
+ls -la app/search/ 2>/dev/null
+ls -la "app/booking/[id]/" 2>/dev/null
+
+# যদি খালি হয়, মুছুন
+rmdir app/search 2>/dev/null
+rmdir "app/booking/[id]" 2>/dev/null
+rmdir app/booking 2>/dev/null
+
+# Verify
+ls -la app/
