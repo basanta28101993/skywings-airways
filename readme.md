@@ -938,3 +938,53 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     </main>
   );
 }
+
+# apps/web folder-এ যান
+cd /Users/Basanta/skywings-airways/apps/web
+pwd
+# /Users/Basanta/skywings-airways/apps/web
+
+# Install
+npm install next-intl
+
+# vi locales/en.json e ei containt add korun
+
+{
+  "nav": {
+    "search": "Search Flights",
+    "login": "Login"
+  },
+  "home": {
+    "title": "Fly the World with SkyWings",
+    "subtitle": "Book flights to 50+ destinations worldwide",
+    "cta": "Search Flights",
+    "feature1Title": "Safe Travel",
+    "feature1Desc": "IATA certified airline with global safety standards",
+    "feature2Title": "Best Prices",
+    "feature2Desc": "AI-powered dynamic pricing for the best deals",
+    "feature3Title": "24/7 Support",
+    "feature3Desc": "AI chatbot in 10+ languages, always available"
+  },
+  "search": {
+    "title": "Search Flights",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "button": "Search",
+    "searching": "Searching...",
+    "noResults": "No flights found. Try DEL → BOM",
+    "tryThese": "Try: DEL → BOM, BOM → GOA, DEL → BLR",
+    "bookNow": "Book Now",
+    "seatsLeft": "seats left"
+  },
+  "booking": {
+    "passengerDetails": "Passenger Details",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "confirmBooking": "Confirm Booking",
+    "confirming": "Confirming...",
+    "demoNote": "This is a demo project. No real payment will be processed.",
+    "totalPrice": "Total Price"
+  }
+}
