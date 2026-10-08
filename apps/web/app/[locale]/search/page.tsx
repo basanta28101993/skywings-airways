@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/navigation';
 
 interface Flight {
   id: string;
@@ -20,6 +21,7 @@ interface Flight {
 }
 
 export default function SearchPage() {
+  const t = useTranslations();
   const [from, setFrom] = useState('DEL');
   const [to, setTo] = useState('BOM');
   const [date, setDate] = useState('2026-12-01');
@@ -31,9 +33,7 @@ export default function SearchPage() {
     setLoading(true);
     setSearched(true);
     try {
-      const res = await fetch(
-        `/api/flights/search?from=${from}&to=${to}&date=${date}`
-      );
+      const res = await fetch(`/api/flights/search?from=${from}&to=${to}&date=${date}`);
       const data = await res.json();
       setFlights(data.flights || []);
     } catch (err) {
@@ -48,19 +48,16 @@ export default function SearchPage() {
     <main className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-md">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            ✈️ SkyWings
-          </Link>
+          <Link href="/" className="text-2xl font-bold text-blue-600">✈️ SkyWings</Link>
         </div>
       </nav>
 
       <div className="max-w-6xl mx-auto p-6">
-        {/* Search Form */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Search Flights</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">{t('search.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">From</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('search.from')}</label>
               <input
                 value={from}
                 onChange={(e) => setFrom(e.target.value.toUpperCase())}
@@ -70,7 +67,7 @@ export default function SearchPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('search.to')}</label>
               <input
                 value={to}
                 onChange={(e) => setTo(e.target.value.toUpperCase())}
@@ -80,7 +77,7 @@ export default function SearchPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('search.date')}</label>
               <input
                 type="date"
                 value={date}
@@ -94,83 +91,79 @@ export default function SearchPage() {
                 disabled={loading}
                 className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-700 disabled:opacity-50 transition"
               >
-                {loading ? 'Searching...' : 'Search'}
+                {loading ? t('search.searching') : t('search.button')}
               </button>
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-3">
-            Try: DEL → BOM, BOM → GOA, DEL → BLR, BLR → BOM
-          </p>
+          <p className="text-sm text-gray-500 mt-3">{t('search.tryThese')}</p>
         </div>
 
-        {/* Results */}
         <div className="space-y-4">
           {loading && (
-            <div className="text-center py-12 text-gray-500">Loading flights...</div>
+            <div className="text-center py-12 text-gray-500">{t('search.searching')}</div>
           )}
 
           {!loading && searched && flights.length === 0 && (
             <div className="bg-white p-8 rounded-lg shadow-md text-center text-gray-500">
-              No flights found for this route. Try DEL → BOM.
+              {t('search.noResults')}
             </div>
           )}
 
-          {!loading &&
-            flights.map((f) => (
-              <div
-                key={f.id}
-                className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center gap-4"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-blue-100 text-blue-700 font-bold px-3 py-2 rounded">
-                    {f.flightNumber}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-800">{f.airline}</div>
-                    <div className="text-sm text-gray-500">{f.aircraft}</div>
-                  </div>
+          {!loading && flights.map((f) => (
+            <div
+              key={f.id}
+              className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-center gap-4"
+            >
+              <div className="flex items-center gap-4">
+                <div className="bg-blue-100 text-blue-700 font-bold px-3 py-2 rounded">
+                  {f.flightNumber}
                 </div>
-
-                <div className="flex items-center gap-6">
-                  <div className="text-center">
-                    <div className="font-bold text-xl text-gray-800">
-                      {new Date(f.departureTime).toLocaleTimeString('en-IN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                      })}
-                    </div>
-                    <div className="text-gray-500 text-sm">{f.fromCode}</div>
-                  </div>
-                  <div className="text-gray-400 text-xl">→</div>
-                  <div className="text-center">
-                    <div className="font-bold text-xl text-gray-800">
-                      {new Date(f.arrivalTime).toLocaleTimeString('en-IN', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                      })}
-                    </div>
-                    <div className="text-gray-500 text-sm">{f.toCode}</div>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="font-bold text-2xl text-blue-600">
-                    ₹{parseInt(f.basePrice).toLocaleString('en-IN')}
-                  </div>
-                  <div className="text-xs text-gray-500 mb-2">
-                    {f.seatsAvailable} seats left
-                  </div>
-                  <Link
-                    href={`/booking/${f.id}`}
-                    className="inline-block bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700 transition"
-                  >
-                    Book Now
-                  </Link>
+                <div>
+                  <div className="font-semibold text-gray-800">{f.airline}</div>
+                  <div className="text-sm text-gray-500">{f.aircraft}</div>
                 </div>
               </div>
-            ))}
+
+              <div className="flex items-center gap-6">
+                <div className="text-center">
+                  <div className="font-bold text-xl text-gray-800">
+                    {new Date(f.departureTime).toLocaleTimeString('en-IN', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </div>
+                  <div className="text-gray-500 text-sm">{f.fromCode}</div>
+                </div>
+                <div className="text-gray-400 text-xl">→</div>
+                <div className="text-center">
+                  <div className="font-bold text-xl text-gray-800">
+                    {new Date(f.arrivalTime).toLocaleTimeString('en-IN', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </div>
+                  <div className="text-gray-500 text-sm">{f.toCode}</div>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <div className="font-bold text-2xl text-blue-600">
+                  ₹{parseInt(f.basePrice).toLocaleString('en-IN')}
+                </div>
+                <div className="text-xs text-gray-500 mb-2">
+                  {f.seatsAvailable} {t('search.seatsLeft')}
+                </div>
+                <Link
+                  href={`/booking/${f.id}`}
+                  className="inline-block bg-green-600 text-white px-6 py-2 rounded font-semibold hover:bg-green-700 transition"
+                >
+                  {t('search.bookNow')}
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </main>

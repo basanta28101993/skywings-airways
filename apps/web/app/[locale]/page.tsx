@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/navigation';
 
 export default function Home() {
   const t = useTranslations();
