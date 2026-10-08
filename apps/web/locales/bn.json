@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "search": "ফ্লাইট খুঁজুন",
+    "login": "লগইন"
+  },
+  "home": {
+    "title": "SkyWings-এর সাথে বিশ্ব ভ্রমণ করুন",
+    "subtitle": "বিশ্বব্যাপী ৫০+ গন্তব্যে ফ্লাইট বুক করুন",
+    "cta": "ফ্লাইট খুঁজুন",
+    "feature1Title": "নিরাপদ ভ্রমণ",
+    "feature1Desc": "IATA সার্টিফাইড এয়ারলাইন্স",
+    "feature2Title": "সেরা দাম",
+    "feature2Desc": "AI-চালিত ডায়নামিক প্রাইসিং",
+    "feature3Title": "২৪/৭ সাপোর্ট",
+    "feature3Desc": "১০+ ভাষায় AI চ্যাটবট"
+  },
+  "search": {
+    "title": "ফ্লাইট খুঁজুন",
+    "from": "থেকে",
+    "to": "পর্যন্ত",
+    "date": "তারিখ",
+    "button": "খুঁজুন",
+    "searching": "খুঁজছি...",
+    "noResults": "কোনো ফ্লাইট পাওয়া যায়নি",
+    "tryThese": "চেষ্টা করুন: DEL → BOM",
+    "bookNow": "এখনই বুক করুন",
+    "seatsLeft": "সিট বাকি"
+  },
+  "booking": {
+    "passengerDetails": "যাত্রীর বিবরণ",
+    "fullName": "সম্পূর্ণ নাম",
+    "email": "ইমেইল",
+    "phone": "ফোন",
+    "confirmBooking": "বুকিং নিশ্চিত করুন",
+    "confirming": "নিশ্চিত করছি...",
+    "demoNote": "এটি একটি ডেমো প্রজেক্ট।",
+    "totalPrice": "মোট মূল্য"
+  }
+}
