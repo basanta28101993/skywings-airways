@@ -988,3 +988,80 @@ npm install next-intl
     "totalPrice": "Total Price"
   }
 }
+
+
+# 🌍 i18n Config Setup — এটা কী এবং কেন লাগে?
+# i18n = internationalization (i + 18 letters + n)
+
+# মানে: একটা app-কে multiple language + country support করানোর ব্যবস্থা।
+
+# এখন (i18n ছাড়া)
+# text
+# User: http://localhost:3000
+# Page: "Fly the World with SkyWings" ← সবসময় English
+
+# User (Japan): http://localhost:3000
+# Page: "Fly the World with SkyWings" ← ❌ English-ই!
+
+# User (Germany): http://localhost:3000
+# Page: "Fly the World with SkyWings" ← ❌ English-ই!
+
+# i18n-এর পরে
+# User (India): http://localhost:3000/in
+# Page: "Fly the World with SkyWings" ← English
+
+# User (Japan): http://localhost:3000/jp
+# Page: "SkyWingsで世界を飛ぶ" ← ✅ Japanese!
+
+# User (Germany): http://localhost:3000/de
+# Page: "Mit SkyWings um die Welt fliegen" ← ✅ German!
+
+# 🔧 i18n Config Setup মানে কী?
+# Config = Settings (কনফিগারেশন)
+
+# i18n Config = "কোন দেশে কী language, কীভাবে detect করব" — এই settings-এর file
+
+# আমরা ৩টা file বানাচ্ছি:
+
+# 📄 File 1: i18n.ts — "Translation Loader"
+# কাজ: কোন locale-এ কোন translation file load করব
+
+# typescript
+# // মানে:
+# 'in' (India)     → locales/en.json load করো
+# 'jp' (Japan)     → locales/ja.json load করো
+# 'de' (Germany)   → locales/de.json load করো
+# 'ae' (UAE)       → locales/ar.json load করো
+# 'us' (USA)       → locales/en.json load করো
+# 'bd' (Bangladesh)→ locales/bn.json load করো
+# Analogy: লাইব্রেরিয়ান যে বলে দেয় "তুমি বাংলা বই চাইলে এই shelf-এ যাও, ইংরেজি চাইলে ওই shelf-এ যাও"
+
+# 📄 File 2: middleware.ts — "Country Detector"
+# কাজ: ইউজার কোন দেশ থেকে আসছে সেটা detect করে সঠিক URL-এ পাঠানো
+
+# typescript
+# // মানে:
+# User from India   → /in URL-এ পাঠাও
+# User from Japan   → /jp URL-এ পাঠাও
+# User from Germany → /de URL-এ পাঠাও
+# Analogy: এয়ারপোর্টের ground staff যে আপনাকে সঠিক gate-এ পাঠায়
+
+# Real flow 
+
+# User (Japan) → skywings.com খোলে
+                    ↓
+#         Middleware detect করে: country = JP
+                    ↓
+#         skywings.com/jp তে redirect করে
+                    ↓
+#         Japanese page দেখায়
+
+# File 3: next.config.ts — "Next.js Bridge"
+# কাজ: Next.js-কে বলে "আমি i18n plugin ব্যবহার করব"
+
+# typescript
+# // মানে:
+# Next.js, এই project-এ i18n plugin enable করো
+# Analogy: Manager যে team-কে বলে "আজ থেকে আমরা নতুন system use করব"
+
+<!-- #
