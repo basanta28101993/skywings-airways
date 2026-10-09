@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/navigation';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 interface Flight {
   id: string;
@@ -106,17 +107,33 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-md">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+      {/* Navbar */}
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-blue-600">
             ✈️ SkyWings
           </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/search"
+              className="text-gray-700 hover:text-blue-600 font-medium hidden md:inline"
+            >
+              {t('nav.search')}
+            </Link>
+            <Link
+              href="/login"
+              className="text-gray-700 hover:text-blue-600 font-medium hidden md:inline"
+            >
+              {t('nav.login')}
+            </Link>
+            <LanguageSwitcher />
+          </div>
         </div>
       </nav>
 
       <div className="max-w-2xl mx-auto p-6">
         {flight && (
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-md mb-6">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-2xl shadow-md mb-6">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <div className="text-sm opacity-90">{flight.airline}</div>
@@ -160,7 +177,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
           </div>
         )}
 
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="bg-white p-8 rounded-2xl shadow-md">
           <h1 className="text-2xl font-bold mb-6 text-gray-800">
             {t('booking.passengerDetails')}
           </h1>
@@ -173,7 +190,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Basanta Das"
-                className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
               />
             </div>
             <div>
@@ -185,7 +202,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
               />
             </div>
             <div>
@@ -196,7 +213,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 9999999999"
-                className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
+                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:border-blue-500"
               />
             </div>
           </div>
@@ -204,7 +221,7 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
           <button
             onClick={confirmBooking}
             disabled={loading || !name || !email}
-            className="w-full mt-6 bg-green-600 text-white py-3 rounded font-semibold hover:bg-green-700 disabled:opacity-50 transition"
+            className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition"
           >
             {loading
               ? t('booking.confirming')
