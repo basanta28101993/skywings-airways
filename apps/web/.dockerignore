@@ -1,0 +1,42 @@
+# Dependencies (will be installed in Docker)
+node_modules
+npm-debug.log*
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Environment (SECRETS!)
+.env
+.env.local
+.env*.local
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# OS
+.DS_Store
+*.pem
+
+# IDE
+.vscode
+.idea
+
+# Testing
+coverage
+.nyc_output
+
+# Local DB
+prisma/*.db
+prisma/*.db-journal
+
+# Readme
+README.md
