@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "search": "Flüge suchen",
+    "login": "Anmelden"
+  },
+  "home": {
+    "title": "Mit SkyWings um die Welt fliegen",
+    "subtitle": "Buchen Sie Flüge zu über 50 Zielen",
+    "cta": "Flüge suchen",
+    "feature1Title": "Sicheres Reisen",
+    "feature1Desc": "IATA-zertifizierte Fluggesellschaft",
+    "feature2Title": "Beste Preise",
+    "feature2Desc": "KI-gestützte dynamische Preisgestaltung",
+    "feature3Title": "24/7-Support",
+    "feature3Desc": "KI-Chatbot in über 10 Sprachen"
+  },
+  "search": {
+    "title": "Flüge suchen",
+    "from": "Von",
+    "to": "Nach",
+    "date": "Datum",
+    "button": "Suchen",
+    "searching": "Suche läuft...",
+    "noResults": "Keine Flüge gefunden",
+    "tryThese": "Versuchen: DEL → BOM",
+    "bookNow": "Jetzt buchen",
+    "seatsLeft": "Sitze übrig"
+  },
+  "booking": {
+    "passengerDetails": "Passagierdaten",
+    "fullName": "Vollständiger Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "confirmBooking": "Buchung bestätigen",
+    "confirming": "Bestätigung...",
+    "demoNote": "Dies ist ein Demo-Projekt.",
+    "totalPrice": "Gesamtpreis"
+  }
+}

@@ -938,3 +938,265 @@ export default function BookingPage({ params }: { params: Promise<{ id: string }
     </main>
   );
 }
+
+# apps/web folder-এ যান
+cd /Users/Basanta/skywings-airways/apps/web
+pwd
+# /Users/Basanta/skywings-airways/apps/web
+
+# Install
+npm install next-intl
+
+# vi locales/en.json e ei containt add korun
+
+{
+  "nav": {
+    "search": "Search Flights",
+    "login": "Login"
+  },
+  "home": {
+    "title": "Fly the World with SkyWings",
+    "subtitle": "Book flights to 50+ destinations worldwide",
+    "cta": "Search Flights",
+    "feature1Title": "Safe Travel",
+    "feature1Desc": "IATA certified airline with global safety standards",
+    "feature2Title": "Best Prices",
+    "feature2Desc": "AI-powered dynamic pricing for the best deals",
+    "feature3Title": "24/7 Support",
+    "feature3Desc": "AI chatbot in 10+ languages, always available"
+  },
+  "search": {
+    "title": "Search Flights",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "button": "Search",
+    "searching": "Searching...",
+    "noResults": "No flights found. Try DEL → BOM",
+    "tryThese": "Try: DEL → BOM, BOM → GOA, DEL → BLR",
+    "bookNow": "Book Now",
+    "seatsLeft": "seats left"
+  },
+  "booking": {
+    "passengerDetails": "Passenger Details",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "confirmBooking": "Confirm Booking",
+    "confirming": "Confirming...",
+    "demoNote": "This is a demo project. No real payment will be processed.",
+    "totalPrice": "Total Price"
+  }
+}
+
+
+# 🌍 i18n Config Setup — এটা কী এবং কেন লাগে?
+# i18n = internationalization (i + 18 letters + n)
+
+# মানে: একটা app-কে multiple language + country support করানোর ব্যবস্থা।
+
+# এখন (i18n ছাড়া)
+# text
+# User: http://localhost:3000
+# Page: "Fly the World with SkyWings" ← সবসময় English
+
+# User (Japan): http://localhost:3000
+# Page: "Fly the World with SkyWings" ← ❌ English-ই!
+
+# User (Germany): http://localhost:3000
+# Page: "Fly the World with SkyWings" ← ❌ English-ই!
+
+# i18n-এর পরে
+# User (India): http://localhost:3000/in
+# Page: "Fly the World with SkyWings" ← English
+
+# User (Japan): http://localhost:3000/jp
+# Page: "SkyWingsで世界を飛ぶ" ← ✅ Japanese!
+
+# User (Germany): http://localhost:3000/de
+# Page: "Mit SkyWings um die Welt fliegen" ← ✅ German!
+
+# 🔧 i18n Config Setup মানে কী?
+# Config = Settings (কনফিগারেশন)
+
+# i18n Config = "কোন দেশে কী language, কীভাবে detect করব" — এই settings-এর file
+
+# আমরা ৩টা file বানাচ্ছি:
+
+# 📄 File 1: i18n.ts — "Translation Loader"
+# কাজ: কোন locale-এ কোন translation file load করব
+
+# typescript
+# // মানে:
+# 'in' (India)     → locales/en.json load করো
+# 'jp' (Japan)     → locales/ja.json load করো
+# 'de' (Germany)   → locales/de.json load করো
+# 'ae' (UAE)       → locales/ar.json load করো
+# 'us' (USA)       → locales/en.json load করো
+# 'bd' (Bangladesh)→ locales/bn.json load করো
+# Analogy: লাইব্রেরিয়ান যে বলে দেয় "তুমি বাংলা বই চাইলে এই shelf-এ যাও, ইংরেজি চাইলে ওই shelf-এ যাও"
+
+# 📄 File 2: middleware.ts — "Country Detector"
+# কাজ: ইউজার কোন দেশ থেকে আসছে সেটা detect করে সঠিক URL-এ পাঠানো
+
+# typescript
+# // মানে:
+# User from India   → /in URL-এ পাঠাও
+# User from Japan   → /jp URL-এ পাঠাও
+# User from Germany → /de URL-এ পাঠাও
+# Analogy: এয়ারপোর্টের ground staff যে আপনাকে সঠিক gate-এ পাঠায়
+
+# Real flow 
+
+# User (Japan) → skywings.com খোলে
+                    ↓
+#         Middleware detect করে: country = JP
+                    ↓
+#         skywings.com/jp তে redirect করে
+                    ↓
+#         Japanese page দেখায়
+
+# File 3: next.config.ts — "Next.js Bridge"
+# কাজ: Next.js-কে বলে "আমি i18n plugin ব্যবহার করব"
+
+# typescript
+# // মানে:
+# Next.js, এই project-এ i18n plugin enable করো
+# Analogy: Manager যে team-কে বলে "আজ থেকে আমরা নতুন system use করব"
+
+
+
+cd /Users/Basanta/skywings-airways/apps/web
+pwd
+# next-intl Install Verify
+npm list next-intl
+# vi i18n.ts
+import { getRequestConfig } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+export const locales = ['in', 'jp', 'de', 'ae', 'us', 'bd'] as const;
+export type Locale = (typeof locales)[number];
+
+export const localeToLanguage: Record<Locale, string> = {
+  'in': 'en',
+  'jp': 'ja',
+  'de': 'de',
+  'ae': 'ar',
+  'us': 'en',
+  'bd': 'bn',
+};
+
+export default getRequestConfig(async ({ locale }) => {
+  if (!locales.includes(locale as Locale)) notFound();
+
+  const lang = localeToLanguage[locale as Locale];
+  return {
+    messages: (await import(`./locales/${lang}.json`)).default,
+  };
+});
+
+# middleware.ts
+
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+
+const intlMiddleware = createMiddleware({
+  locales: ['in', 'jp', 'de', 'ae', 'us', 'bd'],
+  defaultLocale: 'in',
+  localePrefix: 'always',
+});
+
+const COUNTRY_TO_LOCALE: Record<string, string> = {
+  'IN': 'in',
+  'JP': 'jp',
+  'DE': 'de',
+  'AE': 'ae',
+  'US': 'us',
+  'BD': 'bd',
+  'GB': 'us',
+  'SG': 'us',
+  'CA': 'us',
+  'AU': 'us',
+};
+
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // If path already has locale prefix, run i18n middleware
+  if (/^\/(in|jp|de|ae|us|bd)(\/|$)/.test(pathname)) {
+    return intlMiddleware(request);
+  }
+
+  // Get country from headers (fallback to 'IN' in dev)
+  const country =
+    request.headers.get('x-vercel-ip-country') ||
+    request.headers.get('cf-ipcountry') ||
+    'IN';
+
+  const locale = COUNTRY_TO_LOCALE[country] || 'in';
+
+  // Redirect to locale-prefixed URL
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname}`;
+  return NextResponse.redirect(url);
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+  ],
+};
+
+# >next.config.ts
+# vi next.config.ts te nicher contant add korun
+
+import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
+
+const nextConfig: NextConfig = {
+  allowedDevOrigins: ['192.168.0.101', 'localhost', '127.0.0.1'],
+};
+
+export default withNextIntl(nextConfig);
+
+# Step 1: নতুন [locale] Folders বানান
+bash
+cd /Users/Basanta/skywings-airways/apps/web
+
+# Target folders বানান
+mkdir -p "app/[locale]/search"
+mkdir -p "app/[locale]/booking/[id]"
+
+# Verify
+ls -la app/
+
+# Step 2: Files Move করুন
+bash
+# Home page
+mv app/page.tsx "app/[locale]/page.tsx"
+
+# Search page
+mv app/search/page.tsx "app/[locale]/search/page.tsx"
+
+# Booking page
+mv "app/booking/[id]/page.tsx" "app/[locale]/booking/[id]/page.tsx"
+
+# Verify
+find app -name "*.tsx" | sort
+
+# Step 1: পুরনো খালি Folders মুছুন
+bash
+cd /Users/Basanta/skywings-airways/apps/web
+
+# খালি folders check
+ls -la app/search/ 2>/dev/null
+ls -la "app/booking/[id]/" 2>/dev/null
+
+# যদি খালি হয়, মুছুন
+rmdir app/search 2>/dev/null
+rmdir "app/booking/[id]" 2>/dev/null
+rmdir app/booking 2>/dev/null
+
+# Verify
+ls -la app/
