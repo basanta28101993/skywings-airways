@@ -34,6 +34,8 @@
     "confirmBooking": "বুকিং নিশ্চিত করুন",
     "confirming": "নিশ্চিত করছি...",
     "demoNote": "এটি একটি ডেমো প্রজেক্ট।",
-    "totalPrice": "মোট মূল্য"
+    "totalPrice": "মোট মূল্য",
+    "bookingConfirmed": "বুকিং নিশ্চিত হয়েছে!",
+    "pnr": "পিএনআর"
   }
 }
