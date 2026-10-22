@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "search": "フライト検索",
+    "login": "ログイン"
+  },
+  "home": {
+    "title": "SkyWingsで世界を飛ぶ",
+    "subtitle": "世界50以上の目的地へのフライトを予約",
+    "cta": "フライトを検索",
+    "feature1Title": "安全な旅行",
+    "feature1Desc": "世界的な安全基準を持つIATA認定航空会社",
+    "feature2Title": "最高の価格",
+    "feature2Desc": "AIによる動的価格設定",
+    "feature3Title": "24時間サポート",
+    "feature3Desc": "10以上の言語でAIチャットボット"
+  },
+  "search": {
+    "title": "フライト検索",
+    "from": "出発地",
+    "to": "目的地",
+    "date": "日付",
+    "button": "検索",
+    "searching": "検索中...",
+    "noResults": "フライトが見つかりません",
+    "tryThese": "お試し: DEL → BOM",
+    "bookNow": "今すぐ予約",
+    "seatsLeft": "席残り"
+  },
+  "booking": {
+    "passengerDetails": "乗客情報",
+    "fullName": "氏名",
+    "email": "メール",
+    "phone": "電話",
+    "confirmBooking": "予約を確定",
+    "confirming": "確認中...",
+    "demoNote": "これはデモプロジェクトです。",
+    "totalPrice": "合計金額"
+  }
+}

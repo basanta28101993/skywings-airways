@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "search": "ابحث عن الرحلات",
+    "login": "تسجيل الدخول"
+  },
+  "home": {
+    "title": "طر حول العالم مع SkyWings",
+    "subtitle": "احجز رحلات إلى أكثر من 50 وجهة",
+    "cta": "ابحث عن الرحلات",
+    "feature1Title": "سفر آمن",
+    "feature1Desc": "شركة طيران معتمدة من IATA",
+    "feature2Title": "أفضل الأسعار",
+    "feature2Desc": "تسعير ديناميكي مدعوم بالذكاء الاصطناعي",
+    "feature3Title": "دعم 24/7",
+    "feature3Desc": "روبوت محادثة بأكثر من 10 لغات"
+  },
+  "search": {
+    "title": "ابحث عن الرحلات",
+    "from": "من",
+    "to": "إلى",
+    "date": "التاريخ",
+    "button": "بحث",
+    "searching": "جاري البحث...",
+    "noResults": "لم يتم العثور على رحلات",
+    "tryThese": "جرب: DEL → BOM",
+    "bookNow": "احجز الآن",
+    "seatsLeft": "مقعد متبقي"
+  },
+  "booking": {
+    "passengerDetails": "بيانات المسافر",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "confirmBooking": "تأكيد الحجز",
+    "confirming": "جاري التأكيد...",
+    "demoNote": "هذا مشروع تجريبي.",
+    "totalPrice": "السعر الإجمالي"
+  }
+}
