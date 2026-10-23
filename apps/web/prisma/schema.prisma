@@ -118,3 +118,15 @@ model AncillaryPurchase {
   @@index([bookingId])
   @@index([itemId])
 }
+
+model SystemMetric {
+  id          String   @id @default(cuid())
+  cpuUsage    Float
+  memoryUsage Float
+  latency     Float    // in ms
+  errorRate   Float    // percentage (0-100)
+  isAnomaly   Boolean  @default(false) // Ground truth for evaluation
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
