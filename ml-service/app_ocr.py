@@ -1,13 +1,14 @@
 """
 SkyWings Computer Vision (OCR) - FastAPI Service
-Extracts text from Passport/ID images.
+Uses PassportEye (MRZ) with data cleaning and image format conversion.
 """
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
-import pytesseract
+from passporteye import read_mrz
 from PIL import Image
 import io
 import re
+import os
 
 app = FastAPI(title="SkyWings OCR Service")
 
@@ -18,44 +19,61 @@ class OCRResponse(BaseModel):
 @app.post("/scan-document", response_model=OCRResponse)
 async def scan_document(file: UploadFile = File(...)):
     try:
-        # 1. Read the uploaded image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
-        # 2. Extract text using Tesseract
-        raw_text = pytesseract.image_to_string(image, config='--psm 6')
+        # 🚨 FIX: Convert RGBA/P (PNG with transparency) to RGB for JPEG saving
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+            
+        temp_path = "/tmp/temp_passport.jpg"
+        image.save(temp_path, format="JPEG")
         
-        # 3. Extract specific fields using Regex
+        mrz = read_mrz(temp_path)
+        
         data = {
             "name": None,
             "dob": None,
             "document_number": None
         }
         
-        # Regex for Date of Birth
-        dob_match = re.search(r'\b(\d{2}[/-]\d{2}[/-]\d{4}|\d{4}[/-]\d{2}[/-]\d{2})\b', raw_text)
-        if dob_match:
-            data["dob"] = dob_match.group(1)
+        raw_text = ""
+        
+        if mrz:
+            mrz_data = mrz.to_dict()
+            raw_text = mrz_data.get('raw_text', '')
             
-        # Regex for Passport Number
-        doc_match = re.search(r'\b([A-Z]{1,2}\d{6,8})\b', raw_text)
-        if doc_match:
-            data["document_number"] = doc_match.group(1)
+            # --- 1. Clean Name ---
+            surname = mrz_data.get('surname', '').replace('<', ' ').strip()
+            names = mrz_data.get('names', '').replace('<', ' ').strip()
             
-        # 4. Extract Name (Improved Logic to avoid grabbing the next line)
-        name_match = re.search(r'Name:\s*([A-Za-z\s]+)', raw_text, re.IGNORECASE)
-        if name_match:
-            name = name_match.group(1)
-            # Clean up if it accidentally grabbed the next field word
-            for stop_word in ['DOB', 'Date', 'Passport', 'Nationality']:
-                if stop_word in name:
-                    name = name.split(stop_word)[0]
-            data["name"] = name.strip()
+            # Combine name
+            full_name = f"{surname} {names}".strip()
+            
+            # Remove trailing 'K's (caused by OCR misreading '<')
+            # And remove extra spaces
+            full_name = re.sub(r'K+$', '', full_name).strip()
+            full_name = re.sub(r'\s+', ' ', full_name) # replace multiple spaces with single space
+            
+            data["name"] = full_name
+            
+            # --- 2. Clean DOB ---
+            dob = mrz_data.get('date_of_birth', '')
+            if len(dob) == 6:
+                data["dob"] = f"{dob[4:6]}/{dob[2:4]}/19{dob[0:2]}" 
+                
+            # --- 3. Clean Document Number ---
+            doc_num = mrz_data.get('number', '')
+            # Remove any trailing '<' or non-alphanumeric characters
+            doc_num = re.sub(r'[^A-Z0-9]', '', doc_num.upper())
+            data["document_number"] = doc_num
+            
         else:
-            # Fallback if "Name:" is not found
-            name_lines = [line for line in raw_text.split('\n') if line.isupper() and len(line) > 5 and 'REPUBLIC' not in line]
-            if name_lines:
-                data["name"] = name_lines[0].strip()
+            raw_text = "MRZ not found in image. Please use a clear image."
+            
+        # Cleanup temp file
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
         return OCRResponse(
             raw_text=raw_text,
