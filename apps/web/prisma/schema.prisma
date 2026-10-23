@@ -52,3 +52,45 @@ model User {
   locale    String   @default("in")
   createdAt DateTime @default(now())
 }
+// ═══════════════════════════════════════════════════════════
+// DAILY ROUTE METRICS (Central Data Platform - Offline Store)
+// ═══════════════════════════════════════════════════════════
+model DailyRouteMetrics {
+  id              String   @id @default(cuid())
+  date            DateTime @db.Date
+  route           String   // e.g., "DEL-BOM"
+  fromCode        String
+  toCode          String
+  bookings        Int
+  revenue         Decimal  @db.Decimal(12, 2)
+  avgFare         Decimal  @db.Decimal(10, 2)
+  cancellations   Int      @default(0)
+  loadFactor      Float
+  isWeekend       Boolean
+  isHoliday       Boolean  @default(false)
+  holidayName     String?
+  weatherScore    Float?
+  competitorFare  Decimal? @db.Decimal(10, 2)
+  promotionActive Boolean  @default(false)
+
+  @@unique([date, route])
+  @@index([route])
+  @@index([date])
+  @@index([route, date])
+  @@map("daily_route_metrics")
+}
+
+model Transaction {
+  id             String   @id @default(cuid())
+  amount         Decimal  @db.Decimal(10, 2)
+  currency       String   @default("INR")
+  paymentMethod  String   // e.g., "card", "upi", "netbanking"
+  ipCountry      String
+  billingCountry String
+  deviceType     String   // e.g., "web", "ios", "android"
+  bookingHour    Int      // 0-23
+  isFraud        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([isFraud])
+}
