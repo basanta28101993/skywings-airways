@@ -28,17 +28,18 @@ model Flight {
 }
 
 model Booking {
-  id             String   @id @default(cuid())
-  pnr            String   @unique
-  flightId       String
-  flight         Flight   @relation(fields: [flightId], references: [id])
-  passengerName  String
-  passengerEmail String
-  passengerPhone String
-  totalPrice     Decimal  @db.Decimal(10, 2)
-  currency       String   @default("INR")
-  status         String   @default("CONFIRMED")
-  createdAt      DateTime @default(now())
+  id                 String   @id @default(cuid())
+  pnr                String   @unique
+  flightId           String
+  flight             Flight   @relation(fields: [flightId], references: [id])
+  passengerName      String
+  passengerEmail     String
+  passengerPhone     String
+  totalPrice         Decimal  @db.Decimal(10, 2)
+  currency           String   @default("INR")
+  status             String   @default("CONFIRMED")
+  createdAt          DateTime @default(now())
+  ancillaryPurchases AncillaryPurchase[]
 
   @@index([passengerEmail])
   @@index([pnr])
@@ -52,6 +53,7 @@ model User {
   locale    String   @default("in")
   createdAt DateTime @default(now())
 }
+
 // ═══════════════════════════════════════════════════════════
 // DAILY ROUTE METRICS (Central Data Platform - Offline Store)
 // ═══════════════════════════════════════════════════════════
@@ -93,4 +95,26 @@ model Transaction {
   createdAt      DateTime @default(now())
 
   @@index([isFraud])
+}
+
+model AncillaryItem {
+  id        String              @id @default(cuid())
+  name      String
+  category  String              // "baggage", "meal", "lounge", "insurance"
+  price     Decimal             @db.Decimal(10, 2)
+  purchases AncillaryPurchase[]
+}
+
+model AncillaryPurchase {
+  id         String        @id @default(cuid())
+  bookingId  String
+  booking    Booking       @relation(fields: [bookingId], references: [id])
+  itemId     String
+  item       AncillaryItem @relation(fields: [itemId], references: [id])
+  quantity   Int           @default(1)
+  totalPrice Decimal       @db.Decimal(10, 2)
+  createdAt  DateTime      @default(now())
+
+  @@index([bookingId])
+  @@index([itemId])
 }
