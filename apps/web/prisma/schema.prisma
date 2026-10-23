@@ -79,3 +79,18 @@ model DailyRouteMetrics {
   @@index([route, date])
   @@map("daily_route_metrics")
 }
+
+model Transaction {
+  id             String   @id @default(cuid())
+  amount         Decimal  @db.Decimal(10, 2)
+  currency       String   @default("INR")
+  paymentMethod  String   // e.g., "card", "upi", "netbanking"
+  ipCountry      String
+  billingCountry String
+  deviceType     String   // e.g., "web", "ios", "android"
+  bookingHour    Int      // 0-23
+  isFraud        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([isFraud])
+}
