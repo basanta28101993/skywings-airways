@@ -13,6 +13,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Recommendation', path: '/admin/recommendation', icon: '✨' },
     { name: 'Anomaly Detection', path: '/admin/anomaly', icon: '📈' },
     { name: 'Passport OCR', path: '/admin/ocr', icon: '📄' },
+    { name: 'AI Chatbot', path: '/admin/chatbot', icon: '🤖' },
   ];
 
   return (

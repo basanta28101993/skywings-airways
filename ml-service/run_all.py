@@ -14,7 +14,8 @@ SERVICES = [
     ("app_segmentation:app", 8003, "Customer Segmentation"),
     ("app_recommendation:app", 8004, "Recommendation"),
     ("app_anomaly:app", 8005, "Anomaly Detection"),
-    ("app_ocr:app", 8006, "Computer Vision (OCR)")
+    ("app_ocr:app", 8006, "Computer Vision (OCR)"),
+    ("app_chatbot:app", 8007, "AI Chatbot (Agentic)")
 ]
 
 processes = []
